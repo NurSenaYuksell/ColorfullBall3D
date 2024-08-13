@@ -1,16 +1,28 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
+
 public class UIManager : MonoBehaviour
 {
     public Image whiteeffectimage;
     private int effectcontrol = 0;
+
+    private bool radialshine;
+
+    public Image FillRateImage;
+    public GameObject Player;
+    public GameObject FinishLine;
     public Animator LayoutAnimator;
+
+    public TextMeshProUGUI coin_text;
 
     [Header("Setting Buttons")]
     [Space(2)]
     public GameObject settings_Open;
     public GameObject settings_Close;
+    public GameObject layout_Background;
 
     [Header("Sound Buttons")]
     [Space(2)]
@@ -25,7 +37,24 @@ public class UIManager : MonoBehaviour
     public GameObject iap;
     public GameObject information;
 
+    public GameObject intro_Hand;
+    public GameObject toptopmove_Text;
+    public GameObject noAds;
+    public GameObject shop_Button;
+
+    public GameObject Restart_Screen;
+
+    //Oyun sonu Ekrani
+    public GameObject finishScreen;
+    public GameObject blackBackground;
+    public GameObject complete;
+    public GameObject radial_shine;
+    public GameObject coin;
+    public GameObject rewarded;
+    public GameObject nothanks;
+
     public string vibration = "Vibration";
+
 
     public void Start()
     {
@@ -37,7 +66,80 @@ public class UIManager : MonoBehaviour
         {
             PlayerPrefs.SetInt(vibration, 1);
         }
+
+        CoinTextUpdate();
     }
+
+    public void Update()
+    {
+        if (radialshine == true)
+        {
+            radial_shine.GetComponent<RectTransform>().Rotate(new Vector3(0, 0, 15f * Time.deltaTime));
+        }
+        FillRateImage.fillAmount = ((Player.transform.position.z*100) / (FinishLine.transform.position.z))/100;
+    }
+
+
+    public void FirstTouch()
+    {
+        intro_Hand.SetActive(false);
+        toptopmove_Text.SetActive(false);
+        noAds.SetActive(false);
+        shop_Button.SetActive(false);
+        settings_Open.SetActive(false);
+        settings_Close.SetActive(false);
+        layout_Background.SetActive(false);
+        sound_On.SetActive(false);
+        sound_Off.SetActive(false);
+        vibration_On.SetActive(false);
+        vibration_Off.SetActive(false);
+        iap.SetActive(false);
+        information.SetActive(false);
+    }
+
+    public void CoinTextUpdate()
+    {
+        coin_text.text = PlayerPrefs.GetInt("moneyy").ToString();
+    }
+
+    public void RestartButtonActive()
+    {
+        Restart_Screen.SetActive(true);
+    }
+
+    public void RestartScene()
+    {
+        Veriables.firsttouch = 0;
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void FinishScreen()
+    {
+        StartCoroutine(nameof(FinishLaunch));
+
+
+    }
+
+    public IEnumerator FinishLaunch()
+    {
+        Time.timeScale = 0.5f;
+        radialshine = true;
+        finishScreen.SetActive(true);
+        blackBackground.SetActive(true);
+        yield return new WaitForSecondsRealtime(0.8f);
+        complete.SetActive(true);
+        yield return new WaitForSecondsRealtime(1.3f);
+        radial_shine.SetActive(true);
+        coin.SetActive(true);
+        yield return new WaitForSecondsRealtime(1f);
+        rewarded.SetActive(true);
+        yield return new WaitForSecondsRealtime(3f);
+        nothanks.SetActive(true);
+
+
+    }
+
 
 
     public void Privacy_Policy()
@@ -128,25 +230,6 @@ public class UIManager : MonoBehaviour
         vibration_Off.SetActive(false);
         PlayerPrefs.SetInt(vibration, 1);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public IEnumerator WhiteEffect()
     {
